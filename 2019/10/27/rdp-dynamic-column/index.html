@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.1">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.1" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.1">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.1',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="实验环境Oracle11g + rdp2.4 数据准备创建表1234567891011121314151617181920create table DAILY_INCOME(	ID NUMBER not null		primary key,	VENDOR_ID VARCHAR2(255),	INCOME_DAY VARCHAR2(255),	INCOME_TIME DATE,	INCOME_AMO">
+<meta name="keywords" content="数据分析,RDP,SQL pivot">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RDP行转列">
+<meta property="og:url" content="https://huangwl-cn.github.io/2019/10/27/rdp-dynamic-column/index.html">
+<meta property="og:site_name" content="黄文亮的博客">
+<meta property="og:description" content="实验环境Oracle11g + rdp2.4 数据准备创建表1234567891011121314151617181920create table DAILY_INCOME(	ID NUMBER not null		primary key,	VENDOR_ID VARCHAR2(255),	INCOME_DAY VARCHAR2(255),	INCOME_TIME DATE,	INCOME_AMO">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://huangwl-cn.github.io/2019/10/27/rdp-dynamic-column/oracle-data.png">
+<meta property="og:image" content="https://huangwl-cn.github.io/2019/10/27/rdp-dynamic-column/2019-10-27_160512.png">
+<meta property="og:image" content="https://huangwl-cn.github.io/2019/10/27/rdp-dynamic-column/result1.png">
+<meta property="og:image" content="https://huangwl-cn.github.io/2019/10/27/rdp-dynamic-column/2019-10-27_160939.png">
+<meta property="og:image" content="https://huangwl-cn.github.io/2019/10/27/rdp-dynamic-column/2019-10-27_161349.png">
+<meta property="og:image" content="https://huangwl-cn.github.io/2019/10/27/rdp-dynamic-column/2019-10-27_161834.png">
+<meta property="og:image" content="https://huangwl-cn.github.io/2019/10/27/rdp-dynamic-column/2019-10-27_162123.png">
+<meta property="og:image" content="https://huangwl-cn.github.io/2019/10/27/rdp-dynamic-column/2019-10-27_163457.png">
+<meta property="og:image" content="https://huangwl-cn.github.io/2019/10/27/rdp-dynamic-column/2019-10-27_163546.png">
+<meta property="og:image" content="https://huangwl-cn.github.io/2019/10/27/rdp-dynamic-column/2019-10-27_163623.png">
+<meta property="og:image" content="https://huangwl-cn.github.io/2019/10/27/rdp-dynamic-column/2019-10-27_163755.png">
+<meta property="og:image" content="https://huangwl-cn.github.io/2019/10/27/rdp-dynamic-column/2019-10-27_163821.png">
+<meta property="og:image" content="https://huangwl-cn.github.io/2019/10/27/rdp-dynamic-column/2019-10-27_163903.png">
+<meta property="og:image" content="https://huangwl-cn.github.io/2019/10/27/rdp-dynamic-column/2019-10-27_163927.png">
+<meta property="og:updated_time" content="2019-10-27T09:50:26.645Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RDP行转列">
+<meta name="twitter:description" content="实验环境Oracle11g + rdp2.4 数据准备创建表1234567891011121314151617181920create table DAILY_INCOME(	ID NUMBER not null		primary key,	VENDOR_ID VARCHAR2(255),	INCOME_DAY VARCHAR2(255),	INCOME_TIME DATE,	INCOME_AMO">
+<meta name="twitter:image" content="https://huangwl-cn.github.io/2019/10/27/rdp-dynamic-column/oracle-data.png">
+  <link rel="canonical" href="https://huangwl-cn.github.io/2019/10/27/rdp-dynamic-column/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>RDP行转列 | 黄文亮的博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" oncontextmenu="return false" onselectstart="return false">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">黄文亮的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">记录生活中的点点滴滴</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://huangwl-cn.github.io/2019/10/27/rdp-dynamic-column/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="HuangWenliang">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黄文亮的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">RDP行转列
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-10-27 13:52:17 / 修改时间：17:50:26" itemprop="dateCreated datePublished" datetime="2019-10-27T13:52:17+08:00">2019-10-27</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/数据分析/" itemprop="url" rel="index"><span itemprop="name">数据分析</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="实验环境"><a href="#实验环境" class="headerlink" title="实验环境"></a>实验环境</h1><p>Oracle11g + rdp2.4</p>
+<h1 id="数据准备"><a href="#数据准备" class="headerlink" title="数据准备"></a>数据准备</h1><h2 id="创建表"><a href="#创建表" class="headerlink" title="创建表"></a>创建表</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> DAILY_INCOME</span><br><span class="line">(</span><br><span class="line">	<span class="keyword">ID</span> <span class="built_in">NUMBER</span> <span class="keyword">not</span> <span class="literal">null</span></span><br><span class="line">		primary <span class="keyword">key</span>,</span><br><span class="line">	VENDOR_ID VARCHAR2(<span class="number">255</span>),</span><br><span class="line">	INCOME_DAY VARCHAR2(<span class="number">255</span>),</span><br><span class="line">	INCOME_TIME <span class="built_in">DATE</span>,</span><br><span class="line">	INCOME_AMOUNT <span class="built_in">NUMBER</span>(<span class="number">10</span>)</span><br><span class="line">)</span><br><span class="line">/</span><br><span class="line"><span class="keyword">comment</span> <span class="keyword">on</span> <span class="keyword">column</span> DAILY_INCOME.ID <span class="keyword">is</span> <span class="string">'主键'</span></span><br><span class="line">/</span><br><span class="line"><span class="keyword">comment</span> <span class="keyword">on</span> <span class="keyword">column</span> DAILY_INCOME.VENDOR_ID <span class="keyword">is</span> <span class="string">'供应商ID'</span></span><br><span class="line">/</span><br><span class="line"><span class="keyword">comment</span> <span class="keyword">on</span> <span class="keyword">column</span> DAILY_INCOME.INCOME_DAY <span class="keyword">is</span> <span class="string">'星期几'</span></span><br><span class="line">/</span><br><span class="line"><span class="keyword">comment</span> <span class="keyword">on</span> <span class="keyword">column</span> DAILY_INCOME.INCOME_TIME <span class="keyword">is</span> <span class="string">'具体时间'</span></span><br><span class="line">/</span><br><span class="line"><span class="keyword">comment</span> <span class="keyword">on</span> <span class="keyword">column</span> DAILY_INCOME.INCOME_AMOUNT <span class="keyword">is</span> <span class="string">'入账数量'</span></span><br><span class="line">/</span><br></pre></td></tr></table></figure>
+
+<h2 id="插入数据"><a href="#插入数据" class="headerlink" title="插入数据"></a>插入数据</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">1</span>,<span class="string">'SPIKE'</span>, <span class="string">'FRI'</span>,  <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-01 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">100</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">2</span>,<span class="string">'SPIKE'</span>, <span class="string">'MON'</span>,  <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-02 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">300</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">3</span>,<span class="string">'FREDS'</span>, <span class="string">'SUN'</span>,  <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-03 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">400</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">4</span>,<span class="string">'SPIKE'</span>, <span class="string">'WED'</span>,  <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-04 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">500</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">5</span>,<span class="string">'SPIKE'</span>, <span class="string">'TUE'</span>,  <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-05 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">200</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">6</span>,<span class="string">'JOHNS'</span>, <span class="string">'WED'</span>,  <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-06 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">900</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">7</span>,<span class="string">'SPIKE'</span>, <span class="string">'FRI'</span>,  <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-07 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">100</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">8</span>,<span class="string">'JOHNS'</span>, <span class="string">'MON'</span>,  <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-08 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">300</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">9</span>,<span class="string">'SPIKE'</span>, <span class="string">'SUN'</span>,  <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-09 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">400</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">10</span>,<span class="string">'JOHNS'</span>, <span class="string">'FRI'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-10 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">300</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">11</span>,<span class="string">'FREDS'</span>, <span class="string">'TUE'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-11 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">500</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">12</span>,<span class="string">'FREDS'</span>, <span class="string">'TUE'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-12 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">200</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">13</span>,<span class="string">'SPIKE'</span>, <span class="string">'MON'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-13 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">900</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">14</span>,<span class="string">'FREDS'</span>, <span class="string">'FRI'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-14 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">900</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">15</span>,<span class="string">'FREDS'</span>, <span class="string">'MON'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-15 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">500</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">16</span>,<span class="string">'JOHNS'</span>, <span class="string">'SUN'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-16 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">600</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">17</span>,<span class="string">'SPIKE'</span>, <span class="string">'FRI'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-17 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">300</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">18</span>,<span class="string">'SPIKE'</span>, <span class="string">'WED'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-18 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">500</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">19</span>,<span class="string">'SPIKE'</span>, <span class="string">'FRI'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-19 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">300</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">20</span>,<span class="string">'JOHNS'</span>, <span class="string">'THU'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-20 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">800</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">21</span>,<span class="string">'JOHNS'</span>, <span class="string">'SAT'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-21 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">800</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">22</span>,<span class="string">'SPIKE'</span>, <span class="string">'TUE'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-22 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">100</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">23</span>,<span class="string">'SPIKE'</span>, <span class="string">'THU'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-23 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">300</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">24</span>,<span class="string">'FREDS'</span>, <span class="string">'WED'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-24 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">500</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">25</span>,<span class="string">'SPIKE'</span>, <span class="string">'SAT'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-25 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">100</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">26</span>,<span class="string">'FREDS'</span>, <span class="string">'SAT'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-26 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">500</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">27</span>,<span class="string">'FREDS'</span>, <span class="string">'THU'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-27 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">800</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">28</span>,<span class="string">'JOHNS'</span>, <span class="string">'TUE'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-28 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">600</span>);</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2019/10/27/rdp-dynamic-column/oracle-data.png" alt title="数据"></p>
+<blockquote>
+<p>数据说明：<br>&emsp;&emsp;1、供应商某天中可以有多次入账（分批进账）；<br>&emsp;&emsp;2、时间字段的数据和星期可能会对不上，因为时间字段的数据是随便写的，在这里暂时用不上；</p>
+</blockquote>
+<h2 id="启动RDP并配置Oracle数据源"><a href="#启动RDP并配置Oracle数据源" class="headerlink" title="启动RDP并配置Oracle数据源"></a>启动RDP并配置Oracle数据源</h2><p><img src="/2019/10/27/rdp-dynamic-column/2019-10-27_160512.png" alt title="数据"></p>
+<a id="more"></a>
+
+<h1 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h1><p>我们想得到每个供应商的每天的总收入，比如<br><img src="/2019/10/27/rdp-dynamic-column/result1.png" alt></p>
+<h1 id="方法一-group-by"><a href="#方法一-group-by" class="headerlink" title="方法一:group by"></a>方法一:group by</h1><p>第一步<br>点击“设计器”–&gt; “风格报表设计器”子菜单项，然后按以下步骤操作；<br><img src="/2019/10/27/rdp-dynamic-column/2019-10-27_160939.png" alt><br>其中上图中的sql语句为</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span>  VENDOR_ID,</span><br><span class="line">	   <span class="keyword">sum</span>(<span class="keyword">case</span> <span class="keyword">when</span>  INCOME_DAY=<span class="string">'MON'</span> <span class="keyword">then</span> INCOME_AMOUNT <span class="keyword">else</span> <span class="number">0</span> <span class="keyword">end</span>) MON,</span><br><span class="line">	   <span class="keyword">sum</span>(<span class="keyword">case</span> <span class="keyword">when</span>  INCOME_DAY=<span class="string">'TUE'</span> <span class="keyword">then</span> INCOME_AMOUNT <span class="keyword">else</span> <span class="number">0</span> <span class="keyword">end</span>) TUE,</span><br><span class="line">	   <span class="keyword">sum</span>(<span class="keyword">case</span> <span class="keyword">when</span>  INCOME_DAY=<span class="string">'WED'</span> <span class="keyword">then</span> INCOME_AMOUNT <span class="keyword">else</span> <span class="number">0</span> <span class="keyword">end</span>) WED,</span><br><span class="line">	   <span class="keyword">sum</span>(<span class="keyword">case</span> <span class="keyword">when</span>  INCOME_DAY=<span class="string">'THU'</span> <span class="keyword">then</span> INCOME_AMOUNT <span class="keyword">else</span> <span class="number">0</span> <span class="keyword">end</span>) THU,</span><br><span class="line">	   <span class="keyword">sum</span>(<span class="keyword">case</span> <span class="keyword">when</span>  INCOME_DAY=<span class="string">'FRI'</span> <span class="keyword">then</span> INCOME_AMOUNT <span class="keyword">else</span> <span class="number">0</span> <span class="keyword">end</span>) FRI,</span><br><span class="line">	   <span class="keyword">sum</span>(<span class="keyword">case</span> <span class="keyword">when</span>  INCOME_DAY=<span class="string">'SAT'</span> <span class="keyword">then</span> INCOME_AMOUNT <span class="keyword">else</span> <span class="number">0</span> <span class="keyword">end</span>) SAT,</span><br><span class="line">	   <span class="keyword">sum</span>(<span class="keyword">case</span> <span class="keyword">when</span>  INCOME_DAY=<span class="string">'SUN'</span> <span class="keyword">then</span> INCOME_AMOUNT <span class="keyword">else</span> <span class="number">0</span> <span class="keyword">end</span>) SUN</span><br><span class="line"><span class="keyword">from</span> DAILY_INCOME <span class="keyword">group</span> <span class="keyword">by</span> VENDOR_ID</span><br></pre></td></tr></table></figure>
+
+<p>第二步<br><img src="/2019/10/27/rdp-dynamic-column/2019-10-27_161349.png" alt></p>
+<p>第三步<br><img src="/2019/10/27/rdp-dynamic-column/2019-10-27_161834.png" alt></p>
+<p>第四步<br>点击预览按钮，即可得到如下结果<br><img src="/2019/10/27/rdp-dynamic-column/2019-10-27_162123.png" alt></p>
+<h1 id="方法二-pivot"><a href="#方法二-pivot" class="headerlink" title="方法二:pivot"></a>方法二:pivot</h1><p>说明：方法二，除了SQL语句不一样外，其余的步骤和方法一完全一样，此处不再赘述；</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">select</span> VENDOR_ID,</span><br><span class="line">	   MON_SUM,</span><br><span class="line">	   THU_SUM,</span><br><span class="line">	   WED_SUM,</span><br><span class="line">	   THU_SUM,</span><br><span class="line">	   FRI_SUM,</span><br><span class="line">	   SAT_SUM,</span><br><span class="line">	   SUN_SUM</span><br><span class="line"><span class="keyword">from</span>     (</span><br><span class="line">		 <span class="keyword">select</span> VENDOR_ID, INCOME_DAY, INCOME_AMOUNT</span><br><span class="line">		 <span class="keyword">from</span> DAILY_INCOME</span><br><span class="line">	 )</span><br><span class="line">		 <span class="keyword">pivot</span></span><br><span class="line">		 (</span><br><span class="line">		  <span class="keyword">sum</span>(INCOME_AMOUNT) <span class="keyword">as</span> <span class="keyword">SUM</span></span><br><span class="line">		  <span class="keyword">for</span> INCOME_DAY</span><br><span class="line">		  <span class="keyword">in</span> (</span><br><span class="line">			  <span class="string">'MON'</span> <span class="keyword">as</span> MON,</span><br><span class="line">			  <span class="string">'TUE'</span> <span class="keyword">AS</span> TUE,</span><br><span class="line">			  <span class="string">'WED'</span> <span class="keyword">AS</span> WED,</span><br><span class="line">			  <span class="string">'THU'</span> <span class="keyword">AS</span> THU,</span><br><span class="line">			  <span class="string">'FRI'</span> <span class="keyword">AS</span> FRI,</span><br><span class="line">			  <span class="string">'SAT'</span> <span class="keyword">AS</span> SAT,</span><br><span class="line">			  <span class="string">'SUN'</span> <span class="keyword">AS</span> SUN</span><br><span class="line">		  )</span><br><span class="line">		 )</span><br></pre></td></tr></table></figure>
+
+<h1 id="方法三-动态列"><a href="#方法三-动态列" class="headerlink" title="方法三:动态列"></a>方法三:动态列</h1><p>动态列我希望使用另外一张表</p>
+<h2 id="创建表-1"><a href="#创建表-1" class="headerlink" title="创建表"></a>创建表</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> user_amt</span><br><span class="line">(</span><br><span class="line">    <span class="keyword">ID</span>        <span class="built_in">varchar</span>(<span class="number">30</span>) primary <span class="keyword">key</span>,</span><br><span class="line">    <span class="keyword">Month</span>     <span class="built_in">varchar</span>(<span class="number">50</span>),</span><br><span class="line">    month_id  <span class="built_in">number</span>,</span><br><span class="line">    user_name <span class="built_in">varchar</span>(<span class="number">80</span>),</span><br><span class="line">    user_id   <span class="built_in">varchar</span>(<span class="number">30</span>),</span><br><span class="line">    amt       <span class="built_in">numeric</span></span><br><span class="line">);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'137'</span>, <span class="string">'一月份'</span>, <span class="number">1</span>, <span class="string">'王笑笑'</span>, <span class="string">'10012'</span>, <span class="number">108</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'138'</span>, <span class="string">'二月份'</span>, <span class="number">2</span>, <span class="string">'王笑笑'</span>, <span class="string">'10012'</span>, <span class="number">268</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'139'</span>, <span class="string">'三月份'</span>, <span class="number">3</span>, <span class="string">'王笑笑'</span>, <span class="string">'10012'</span>, <span class="number">969</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'140'</span>, <span class="string">'四月份'</span>, <span class="number">4</span>, <span class="string">'王笑笑'</span>, <span class="string">'10012'</span>, <span class="number">478</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'141'</span>, <span class="string">'五月份'</span>, <span class="number">5</span>, <span class="string">'王笑笑'</span>, <span class="string">'10012'</span>, <span class="number">481</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'142'</span>, <span class="string">'六月份'</span>, <span class="number">6</span>, <span class="string">'王笑笑'</span>, <span class="string">'10012'</span>, <span class="number">66</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'143'</span>, <span class="string">'七月份'</span>, <span class="number">7</span>, <span class="string">'王笑笑'</span>, <span class="string">'10012'</span>, <span class="number">90</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'144'</span>, <span class="string">'八月份'</span>, <span class="number">8</span>, <span class="string">'王笑笑'</span>, <span class="string">'10012'</span>, <span class="number">12</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'145'</span>, <span class="string">'九月份'</span>, <span class="number">9</span>, <span class="string">'王笑笑'</span>, <span class="string">'10012'</span>, <span class="number">93</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'146'</span>, <span class="string">'十月份'</span>, <span class="number">10</span>, <span class="string">'王笑笑'</span>, <span class="string">'10012'</span>, <span class="number">11</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'147'</span>, <span class="string">'十一月份'</span>, <span class="number">11</span>, <span class="string">'王笑笑'</span>, <span class="string">'10012'</span>, <span class="number">52</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'148'</span>, <span class="string">'十二月份'</span>, <span class="number">12</span>, <span class="string">'王笑笑'</span>, <span class="string">'10012'</span>, <span class="number">76</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'257'</span>, <span class="string">'一月份'</span>, <span class="number">1</span>, <span class="string">'刘思思'</span>, <span class="string">'10021'</span>, <span class="number">389</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'258'</span>, <span class="string">'二月份'</span>, <span class="number">2</span>, <span class="string">'刘思思'</span>, <span class="string">'10021'</span>, <span class="number">808</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'259'</span>, <span class="string">'三月份'</span>, <span class="number">3</span>, <span class="string">'刘思思'</span>, <span class="string">'10021'</span>, <span class="number">160</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'260'</span>, <span class="string">'四月份'</span>, <span class="number">4</span>, <span class="string">'刘思思'</span>, <span class="string">'10021'</span>, <span class="number">266</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'261'</span>, <span class="string">'五月份'</span>, <span class="number">5</span>, <span class="string">'刘思思'</span>, <span class="string">'10021'</span>, <span class="number">217</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'262'</span>, <span class="string">'六月份'</span>, <span class="number">6</span>, <span class="string">'刘思思'</span>, <span class="string">'10021'</span>, <span class="number">241</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'263'</span>, <span class="string">'七月份'</span>, <span class="number">7</span>, <span class="string">'刘思思'</span>, <span class="string">'10021'</span>, <span class="number">144</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'264'</span>, <span class="string">'八月份'</span>, <span class="number">8</span>, <span class="string">'刘思思'</span>, <span class="string">'10021'</span>, <span class="number">172</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'265'</span>, <span class="string">'九月份'</span>, <span class="number">9</span>, <span class="string">'刘思思'</span>, <span class="string">'10021'</span>, <span class="number">607</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'266'</span>, <span class="string">'十月份'</span>, <span class="number">10</span>, <span class="string">'刘思思'</span>, <span class="string">'10021'</span>, <span class="number">217</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'267'</span>, <span class="string">'十一月份'</span>, <span class="number">11</span>, <span class="string">'刘思思'</span>, <span class="string">'10021'</span>, <span class="number">205</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'268'</span>, <span class="string">'十二月份'</span>, <span class="number">12</span>, <span class="string">'刘思思'</span>, <span class="string">'10021'</span>, <span class="number">249</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'305'</span>, <span class="string">'一月份'</span>, <span class="number">1</span>, <span class="string">'张伟'</span>, <span class="string">'10028'</span>, <span class="number">432</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'306'</span>, <span class="string">'二月份'</span>, <span class="number">2</span>, <span class="string">'张伟'</span>, <span class="string">'10028'</span>, <span class="number">756</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'307'</span>, <span class="string">'三月份'</span>, <span class="number">3</span>, <span class="string">'张伟'</span>, <span class="string">'10028'</span>, <span class="number">678</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'308'</span>, <span class="string">'四月份'</span>, <span class="number">4</span>, <span class="string">'张伟'</span>, <span class="string">'10028'</span>, <span class="number">810</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'309'</span>, <span class="string">'五月份'</span>, <span class="number">5</span>, <span class="string">'张伟'</span>, <span class="string">'10028'</span>, <span class="number">954</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'310'</span>, <span class="string">'六月份'</span>, <span class="number">6</span>, <span class="string">'张伟'</span>, <span class="string">'10028'</span>, <span class="number">107</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'311'</span>, <span class="string">'七月份'</span>, <span class="number">7</span>, <span class="string">'张伟'</span>, <span class="string">'10028'</span>, <span class="number">947</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'312'</span>, <span class="string">'八月份'</span>, <span class="number">8</span>, <span class="string">'张伟'</span>, <span class="string">'10028'</span>, <span class="number">192</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'313'</span>, <span class="string">'九月份'</span>, <span class="number">9</span>, <span class="string">'张伟'</span>, <span class="string">'10028'</span>, <span class="number">270</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'314'</span>, <span class="string">'十月份'</span>, <span class="number">10</span>, <span class="string">'张伟'</span>, <span class="string">'10028'</span>, <span class="number">390</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'315'</span>, <span class="string">'十一月份'</span>, <span class="number">11</span>, <span class="string">'张伟'</span>, <span class="string">'10028'</span>, <span class="number">509</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> report_demo.user_amt (<span class="keyword">ID</span>, <span class="keyword">Month</span>, month_id, user_name, user_id, amt) <span class="keyword">VALUES</span> (<span class="string">'316'</span>, <span class="string">'十二月份'</span>, <span class="number">12</span>, <span class="string">'张伟'</span>, <span class="string">'10028'</span>, <span class="number">401</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置三个数据集"><a href="#配置三个数据集" class="headerlink" title="配置三个数据集"></a>配置三个数据集</h2><p><img src="/2019/10/27/rdp-dynamic-column/2019-10-27_163457.png" alt></p>
+<p><img src="/2019/10/27/rdp-dynamic-column/2019-10-27_163546.png" alt></p>
+<p><img src="/2019/10/27/rdp-dynamic-column/2019-10-27_163623.png" alt></p>
+<h2 id="配置三个数据集-1"><a href="#配置三个数据集-1" class="headerlink" title="配置三个数据集"></a>配置三个数据集</h2><p>将数据库集month拖动到合适位置<br><img src="/2019/10/27/rdp-dynamic-column/2019-10-27_163755.png" alt><br><img src="/2019/10/27/rdp-dynamic-column/2019-10-27_163821.png" alt></p>
+<p>将数据库集user拖动到合适位置<br><img src="/2019/10/27/rdp-dynamic-column/2019-10-27_163903.png" alt><br><img src="/2019/10/27/rdp-dynamic-column/2019-10-27_163927.png" alt></p>
+<p>将数据库集amt拖动到合适位置<br>同埋，不再截图</p>
+<h2 id="预览"><a href="#预览" class="headerlink" title="预览"></a>预览</h2><p>此处点击预览即可得到结果，不再赘述；</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>其实RDP官方文档已经有行转列的例子，但是文档简述得很简单，因此自己再写了一遍博客，同时说明了另外两种实现行转列的方法；</p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/数据分析/" rel="tag"># 数据分析</a>
+            
+              <a href="/tags/RDP/" rel="tag"># RDP</a>
+            
+              <a href="/tags/SQL-pivot/" rel="tag"># SQL pivot</a>
+            
+          </div>
+        
+
+        
+
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#实验环境"><span class="nav-number">1.</span> <span class="nav-text">实验环境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据准备"><span class="nav-number">2.</span> <span class="nav-text">数据准备</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建表"><span class="nav-number">2.1.</span> <span class="nav-text">创建表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#插入数据"><span class="nav-number">2.2.</span> <span class="nav-text">插入数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动RDP并配置Oracle数据源"><span class="nav-number">2.3.</span> <span class="nav-text">启动RDP并配置Oracle数据源</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#需求"><span class="nav-number">3.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#方法一-group-by"><span class="nav-number">4.</span> <span class="nav-text">方法一:group by</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#方法二-pivot"><span class="nav-number">5.</span> <span class="nav-text">方法二:pivot</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#方法三-动态列"><span class="nav-number">6.</span> <span class="nav-text">方法三:动态列</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建表-1"><span class="nav-number">6.1.</span> <span class="nav-text">创建表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置三个数据集"><span class="nav-number">6.2.</span> <span class="nav-text">配置三个数据集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置三个数据集-1"><span class="nav-number">6.3.</span> <span class="nav-text">配置三个数据集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#预览"><span class="nav-number">6.4.</span> <span class="nav-text">预览</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.jpg"
+      alt="HuangWenliang">
+  <p class="site-author-name" itemprop="name">HuangWenliang</p>
+  <div class="site-description" itemprop="description">直到这一刻微笑着说话为止，我至少留下了一公升眼泪</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://huangwl-cn.github.io/" title="GitHub &rarr; https://huangwl-cn.github.io/"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:huangwenliang361@163.com" title="E-Mail &rarr; mailto:huangwenliang361@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">HuangWenliang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.1</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.1"></script><script src="/js/motion.js?v=7.4.1"></script>
+<script src="/js/schemes/pisces.js?v=7.4.1"></script>
+
+<script src="/js/next-boot.js?v=7.4.1"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  <!-- 页面点击小红心 -->
+  <script type="text/javascript" src="/js/clicklove.js"></script>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"log":false});</script></body>
+</html>

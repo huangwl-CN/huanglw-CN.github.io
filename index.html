@@ -58,14 +58,14 @@
   <meta name="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
 <meta property="og:type" content="website">
 <meta property="og:title" content="黄文亮的博客">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta property="og:url" content="https://huangwl-cn.github.io/index.html">
 <meta property="og:site_name" content="黄文亮的博客">
 <meta property="og:description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
 <meta property="og:locale" content="zh-CN">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="黄文亮的博客">
 <meta name="twitter:description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
-  <link rel="canonical" href="http://yoursite.com/">
+  <link rel="canonical" href="https://huangwl-cn.github.io/">
 
 
 <script id="page-configurations">
@@ -206,7 +206,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/10/hello-world/">
+    <link itemprop="mainEntityOfPage" href="https://huangwl-cn.github.io/2019/10/27/rdp-dynamic-column/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="HuangWenliang">
@@ -220,7 +220,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
             
-            <a href="/2019/10/10/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
+            <a href="/2019/10/27/rdp-dynamic-column/" class="post-title-link" itemprop="url">RDP行转列</a>
           
         </h1>
 
@@ -235,7 +235,24 @@
                 
               
 
-              <time title="创建时间：2019-10-10 22:50:21" itemprop="dateCreated datePublished" datetime="2019-10-10T22:50:21+08:00">2019-10-10</time>
+              <time title="创建时间：2019-10-27 13:52:17 / 修改时间：17:50:26" itemprop="dateCreated datePublished" datetime="2019-10-27T13:52:17+08:00">2019-10-27</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/数据分析/" itemprop="url" rel="index"><span itemprop="name">数据分析</span></a></span>
+
+                
+                
+              
             </span>
           
 
@@ -250,14 +267,20 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h3 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h3><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+          <h1 id="实验环境"><a href="#实验环境" class="headerlink" title="实验环境"></a>实验环境</h1><p>Oracle11g + rdp2.4</p>
+<h1 id="数据准备"><a href="#数据准备" class="headerlink" title="数据准备"></a>数据准备</h1><h2 id="创建表"><a href="#创建表" class="headerlink" title="创建表"></a>创建表</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> DAILY_INCOME</span><br><span class="line">(</span><br><span class="line">	<span class="keyword">ID</span> <span class="built_in">NUMBER</span> <span class="keyword">not</span> <span class="literal">null</span></span><br><span class="line">		primary <span class="keyword">key</span>,</span><br><span class="line">	VENDOR_ID VARCHAR2(<span class="number">255</span>),</span><br><span class="line">	INCOME_DAY VARCHAR2(<span class="number">255</span>),</span><br><span class="line">	INCOME_TIME <span class="built_in">DATE</span>,</span><br><span class="line">	INCOME_AMOUNT <span class="built_in">NUMBER</span>(<span class="number">10</span>)</span><br><span class="line">)</span><br><span class="line">/</span><br><span class="line"><span class="keyword">comment</span> <span class="keyword">on</span> <span class="keyword">column</span> DAILY_INCOME.ID <span class="keyword">is</span> <span class="string">'主键'</span></span><br><span class="line">/</span><br><span class="line"><span class="keyword">comment</span> <span class="keyword">on</span> <span class="keyword">column</span> DAILY_INCOME.VENDOR_ID <span class="keyword">is</span> <span class="string">'供应商ID'</span></span><br><span class="line">/</span><br><span class="line"><span class="keyword">comment</span> <span class="keyword">on</span> <span class="keyword">column</span> DAILY_INCOME.INCOME_DAY <span class="keyword">is</span> <span class="string">'星期几'</span></span><br><span class="line">/</span><br><span class="line"><span class="keyword">comment</span> <span class="keyword">on</span> <span class="keyword">column</span> DAILY_INCOME.INCOME_TIME <span class="keyword">is</span> <span class="string">'具体时间'</span></span><br><span class="line">/</span><br><span class="line"><span class="keyword">comment</span> <span class="keyword">on</span> <span class="keyword">column</span> DAILY_INCOME.INCOME_AMOUNT <span class="keyword">is</span> <span class="string">'入账数量'</span></span><br><span class="line">/</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h2 id="插入数据"><a href="#插入数据" class="headerlink" title="插入数据"></a>插入数据</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">1</span>,<span class="string">'SPIKE'</span>, <span class="string">'FRI'</span>,  <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-01 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">100</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">2</span>,<span class="string">'SPIKE'</span>, <span class="string">'MON'</span>,  <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-02 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">300</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">3</span>,<span class="string">'FREDS'</span>, <span class="string">'SUN'</span>,  <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-03 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">400</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">4</span>,<span class="string">'SPIKE'</span>, <span class="string">'WED'</span>,  <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-04 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">500</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">5</span>,<span class="string">'SPIKE'</span>, <span class="string">'TUE'</span>,  <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-05 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">200</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">6</span>,<span class="string">'JOHNS'</span>, <span class="string">'WED'</span>,  <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-06 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">900</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">7</span>,<span class="string">'SPIKE'</span>, <span class="string">'FRI'</span>,  <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-07 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">100</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">8</span>,<span class="string">'JOHNS'</span>, <span class="string">'MON'</span>,  <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-08 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">300</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">9</span>,<span class="string">'SPIKE'</span>, <span class="string">'SUN'</span>,  <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-09 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">400</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">10</span>,<span class="string">'JOHNS'</span>, <span class="string">'FRI'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-10 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">300</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">11</span>,<span class="string">'FREDS'</span>, <span class="string">'TUE'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-11 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">500</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">12</span>,<span class="string">'FREDS'</span>, <span class="string">'TUE'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-12 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">200</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">13</span>,<span class="string">'SPIKE'</span>, <span class="string">'MON'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-13 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">900</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">14</span>,<span class="string">'FREDS'</span>, <span class="string">'FRI'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-14 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">900</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">15</span>,<span class="string">'FREDS'</span>, <span class="string">'MON'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-15 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">500</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">16</span>,<span class="string">'JOHNS'</span>, <span class="string">'SUN'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-16 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">600</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">17</span>,<span class="string">'SPIKE'</span>, <span class="string">'FRI'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-17 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">300</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">18</span>,<span class="string">'SPIKE'</span>, <span class="string">'WED'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-18 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">500</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">19</span>,<span class="string">'SPIKE'</span>, <span class="string">'FRI'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-19 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">300</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">20</span>,<span class="string">'JOHNS'</span>, <span class="string">'THU'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-20 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">800</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">21</span>,<span class="string">'JOHNS'</span>, <span class="string">'SAT'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-21 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">800</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">22</span>,<span class="string">'SPIKE'</span>, <span class="string">'TUE'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-22 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">100</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">23</span>,<span class="string">'SPIKE'</span>, <span class="string">'THU'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-23 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">300</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">24</span>,<span class="string">'FREDS'</span>, <span class="string">'WED'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-24 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">500</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">25</span>,<span class="string">'SPIKE'</span>, <span class="string">'SAT'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-25 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">100</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">26</span>,<span class="string">'FREDS'</span>, <span class="string">'SAT'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-26 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">500</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">27</span>,<span class="string">'FREDS'</span>, <span class="string">'THU'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-27 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">800</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> DAILY_INCOME <span class="keyword">values</span> (<span class="number">28</span>,<span class="string">'JOHNS'</span>, <span class="string">'TUE'</span>, <span class="keyword">TO_DATE</span>(<span class="string">'2019-10-28 14:19:43'</span>, <span class="string">'SYYYY-MM-DD HH24:MI:SS'</span>), <span class="number">600</span>);</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2019/10/27/rdp-dynamic-column/oracle-data.png" alt title="数据"></p>
+<blockquote>
+<p>数据说明：<br>&emsp;&emsp;1、供应商某天中可以有多次入账（分批进账）；<br>&emsp;&emsp;2、时间字段的数据和星期可能会对不上，因为时间字段的数据是随便写的，在这里暂时用不上；</p>
+</blockquote>
+<h2 id="启动RDP并配置Oracle数据源"><a href="#启动RDP并配置Oracle数据源" class="headerlink" title="启动RDP并配置Oracle数据源"></a>启动RDP并配置Oracle数据源</h2><p><img src="/2019/10/27/rdp-dynamic-column/2019-10-27_160512.png" alt title="数据"></p>
           <!--noindex-->
           
             <div class="post-button">
-              <a class="btn" href="/2019/10/10/hello-world/#more" rel="contents">
+              <a class="btn" href="/2019/10/27/rdp-dynamic-column/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -334,8 +357,58 @@
         </a>
       </div>
     
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
   </nav>
 </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://huangwl-cn.github.io/" title="GitHub &rarr; https://huangwl-cn.github.io/"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:huangwenliang361@163.com" title="E-Mail &rarr; mailto:huangwenliang361@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
 
 
 
@@ -380,6 +453,9 @@
   </div>
 
   
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
   <script src="/lib/anime.min.js?v=3.1.0"></script>
   <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
   <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
@@ -420,5 +496,5 @@
 
   <!-- 页面点击小红心 -->
   <script type="text/javascript" src="/js/clicklove.js"></script>
-</body>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"log":false});</script></body>
 </html>
