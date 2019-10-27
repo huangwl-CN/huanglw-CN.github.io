@@ -77,7 +77,7 @@
 <meta property="og:image" content="https://huangwl-cn.github.io/2019/10/27/rdp-dynamic-column/2019-10-27_163821.png">
 <meta property="og:image" content="https://huangwl-cn.github.io/2019/10/27/rdp-dynamic-column/2019-10-27_163903.png">
 <meta property="og:image" content="https://huangwl-cn.github.io/2019/10/27/rdp-dynamic-column/2019-10-27_163927.png">
-<meta property="og:updated_time" content="2019-10-27T09:50:26.645Z">
+<meta property="og:updated_time" content="2019-10-27T10:06:02.317Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RDP行转列">
 <meta name="twitter:description" content="实验环境Oracle11g + rdp2.4 数据准备创建表1234567891011121314151617181920create table DAILY_INCOME(	ID NUMBER not null		primary key,	VENDOR_ID VARCHAR2(255),	INCOME_DAY VARCHAR2(255),	INCOME_TIME DATE,	INCOME_AMO">
@@ -251,7 +251,7 @@
                 
               
 
-              <time title="创建时间：2019-10-27 13:52:17 / 修改时间：17:50:26" itemprop="dateCreated datePublished" datetime="2019-10-27T13:52:17+08:00">2019-10-27</time>
+              <time title="创建时间：2019-10-27 13:52:17 / 修改时间：18:06:02" itemprop="dateCreated datePublished" datetime="2019-10-27T13:52:17+08:00">2019-10-27</time>
             </span>
           
             
@@ -311,7 +311,7 @@
 <h2 id="配置三个数据集"><a href="#配置三个数据集" class="headerlink" title="配置三个数据集"></a>配置三个数据集</h2><p><img src="/2019/10/27/rdp-dynamic-column/2019-10-27_163457.png" alt></p>
 <p><img src="/2019/10/27/rdp-dynamic-column/2019-10-27_163546.png" alt></p>
 <p><img src="/2019/10/27/rdp-dynamic-column/2019-10-27_163623.png" alt></p>
-<h2 id="配置三个数据集-1"><a href="#配置三个数据集-1" class="headerlink" title="配置三个数据集"></a>配置三个数据集</h2><p>将数据库集month拖动到合适位置<br><img src="/2019/10/27/rdp-dynamic-column/2019-10-27_163755.png" alt><br><img src="/2019/10/27/rdp-dynamic-column/2019-10-27_163821.png" alt></p>
+<h2 id="使用三个数据集"><a href="#使用三个数据集" class="headerlink" title="使用三个数据集"></a>使用三个数据集</h2><p>将数据库集month拖动到合适位置<br><img src="/2019/10/27/rdp-dynamic-column/2019-10-27_163755.png" alt><br><img src="/2019/10/27/rdp-dynamic-column/2019-10-27_163821.png" alt></p>
 <p>将数据库集user拖动到合适位置<br><img src="/2019/10/27/rdp-dynamic-column/2019-10-27_163903.png" alt><br><img src="/2019/10/27/rdp-dynamic-column/2019-10-27_163927.png" alt></p>
 <p>将数据库集amt拖动到合适位置<br>同埋，不再截图</p>
 <h2 id="预览"><a href="#预览" class="headerlink" title="预览"></a>预览</h2><p>此处点击预览即可得到结果，不再赘述；</p>
@@ -383,7 +383,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#实验环境"><span class="nav-number">1.</span> <span class="nav-text">实验环境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据准备"><span class="nav-number">2.</span> <span class="nav-text">数据准备</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建表"><span class="nav-number">2.1.</span> <span class="nav-text">创建表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#插入数据"><span class="nav-number">2.2.</span> <span class="nav-text">插入数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动RDP并配置Oracle数据源"><span class="nav-number">2.3.</span> <span class="nav-text">启动RDP并配置Oracle数据源</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#需求"><span class="nav-number">3.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#方法一-group-by"><span class="nav-number">4.</span> <span class="nav-text">方法一:group by</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#方法二-pivot"><span class="nav-number">5.</span> <span class="nav-text">方法二:pivot</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#方法三-动态列"><span class="nav-number">6.</span> <span class="nav-text">方法三:动态列</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建表-1"><span class="nav-number">6.1.</span> <span class="nav-text">创建表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置三个数据集"><span class="nav-number">6.2.</span> <span class="nav-text">配置三个数据集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置三个数据集-1"><span class="nav-number">6.3.</span> <span class="nav-text">配置三个数据集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#预览"><span class="nav-number">6.4.</span> <span class="nav-text">预览</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#实验环境"><span class="nav-number">1.</span> <span class="nav-text">实验环境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据准备"><span class="nav-number">2.</span> <span class="nav-text">数据准备</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建表"><span class="nav-number">2.1.</span> <span class="nav-text">创建表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#插入数据"><span class="nav-number">2.2.</span> <span class="nav-text">插入数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动RDP并配置Oracle数据源"><span class="nav-number">2.3.</span> <span class="nav-text">启动RDP并配置Oracle数据源</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#需求"><span class="nav-number">3.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#方法一-group-by"><span class="nav-number">4.</span> <span class="nav-text">方法一:group by</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#方法二-pivot"><span class="nav-number">5.</span> <span class="nav-text">方法二:pivot</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#方法三-动态列"><span class="nav-number">6.</span> <span class="nav-text">方法三:动态列</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建表-1"><span class="nav-number">6.1.</span> <span class="nav-text">创建表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置三个数据集"><span class="nav-number">6.2.</span> <span class="nav-text">配置三个数据集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用三个数据集"><span class="nav-number">6.3.</span> <span class="nav-text">使用三个数据集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#预览"><span class="nav-number">6.4.</span> <span class="nav-text">预览</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
         
       </div>
       <!--/noindex-->
